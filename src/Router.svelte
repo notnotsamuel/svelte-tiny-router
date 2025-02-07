@@ -1,20 +1,18 @@
 <script>
-	// Import Svelte’s context API
+	// Import Svelte’s context API.
 	import { setContext } from 'svelte';
 
-	// A user may pass a starting URL (for example in SSR)
-	export let url = "";
+	// Instead of using "export let url", use $props() to extract properties.
+	let { url = "" } = $props();
 
-	// We “wrap” our current URL inside a reactive object.
-	// (Using $state makes it reactive in our component.)
+	// Create a reactive state for the current path.
 	let routerState = $state({
-		// Use the passed-in url or fall back to window.location.pathname.
-		// (On the server, window is undefined so we use "/" as default.)
+		// If a URL was passed as a prop, use it; otherwise use window.location.pathname.
+		// (On the server, window is undefined so fall back to "/" as a default.)
 		path: url || (typeof window !== 'undefined' ? window.location.pathname : '/')
 	});
 
-	// Define our imperative navigation function.
-	// This both manipulates browser history _and_ updates our reactive state.
+	// Imperative navigation: update both browser history and reactive state.
 	function navigate(to, { replace = false } = {}) {
 		if (typeof window !== 'undefined') {
 			if (replace) {
@@ -22,24 +20,24 @@
 			} else {
 				window.history.pushState({}, "", to);
 			}
-			// Update the router’s state – this triggers reactive updates in any Route.
+			// Update our reactive state.
 			routerState.path = to;
 		}
 	}
 
-	// Listen for browser back/forward events and update our state accordingly.
+	// Listen for browser back/forward events to keep our state in sync.
 	if (typeof window !== 'undefined') {
 		window.addEventListener('popstate', () => {
 			routerState.path = window.location.pathname;
 		});
 	}
 
-	// Expose navigate on the router state so that any descendant could (if needed) call it.
+	// Expose the navigate function on our state (if needed by children).
 	routerState.navigate = navigate;
 
-	// Make our reactive router state available to children via context.
+	// Make our router state available to child components via context.
 	setContext('router', routerState);
 </script>
 
-<!-- Render any children (typically Route components) -->
+<!-- Render any children (typically <Route> components) -->
 <slot />

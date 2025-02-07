@@ -1,14 +1,15 @@
 {
-  "name": "svelte-simple-router",
+  "name": "svelte-tiny-router",
   "version": "1.0.0",
   "description": "A simple and efficient declarative routing library for Svelte 5 built with runes.",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "svelte": "dist/index.mjs",
-  "scripts": {
-    "build": "rollup -c",
-    "dev": "rollup -c -w"
-  },
+  "main": "dist/svelte-tiny-router.es.js",
+  "module": "dist/svelte-tiny-router.es.js",
+  "svelte": "dist/svelte-tiny-router.es.js",
+  "type": "module",
+    "scripts": {
+      "build": "vite build",
+      "dev": "vite build --watch"
+    },
   "keywords": [
     "svelte",
     "router",
@@ -26,8 +27,14 @@
     "svelte": ">=5.0.0"
   },
   "devDependencies": {
-    "rollup": "^4.34.5",
-    "rollup-plugin-svelte": "^7.2.2",
-    "svelte": "^5.19.9"
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "svelte": "^5.19.9",
+    "vite": "^6.1.0"
+  },
+  "exports": {
+    ".": {
+      "svelte": "./dist/svelte-tiny-router.es.js",
+      "default": "./dist/svelte-tiny-router.es.js"
+    }
   }
 }
