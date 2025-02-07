@@ -1,0 +1,33 @@
+{
+  "name": "svelte-simple-router",
+  "version": "1.0.0",
+  "description": "A simple and efficient declarative routing library for Svelte 5 built with runes.",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "svelte": "dist/index.mjs",
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w"
+  },
+  "keywords": [
+    "svelte",
+    "router",
+    "routing",
+    "svelte5",
+    "runes"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/notnotsamuel/svelte-tiny-router"
+  },
+  "author": "Your Name",
+  "license": "MIT",
+  "peerDependencies": {
+    "svelte": ">=5.0.0"
+  },
+  "devDependencies": {
+    "rollup": "^4.34.5",
+    "rollup-plugin-svelte": "^7.2.2",
+    "svelte": "^5.19.9"
+  }
+}
