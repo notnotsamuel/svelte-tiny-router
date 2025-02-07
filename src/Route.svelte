@@ -35,9 +35,10 @@
 {#if matchResult !== null}
 	{#if component}
 		<!-- Render the specified component and spread any route parameters as props. -->
-		<svelte:component this={component} {...matchResult} />
+		{@const Component = component}
+		<Component {...matchResult} />
 	{:else}
 		<!-- Otherwise, render any slot content and expose the route parameters via "let:params". -->
-		<slot params={matchResult} />
+		{@render matchResult()}
 	{/if}
 {/if}

@@ -1,7 +1,7 @@
 <script>
 	import { setContext } from 'svelte';
 
-	let { url = "" } = $props();
+	let { url = "", children} = $props();
 
 	let routerState = $state({
 		path: url || (typeof window !== 'undefined' ? window.location.pathname : '/')
@@ -31,4 +31,4 @@
 </script>
 
 <!-- Render any children (typically <Route> components) -->
-<slot />
+{@render children()}
