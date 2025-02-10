@@ -6,7 +6,7 @@ A simple and efficient declarative routing library for Svelte 5 built with runes
 ```svelte
 <!-- App.svelte -->
 <script>
-  import { Router, Route, navigate } from 'svelte-tiny-router';
+  import { Router, Route } from 'svelte-tiny-router';
   import Home from './Home.svelte';
   import About from './About.svelte';
   import User from './User.svelte';
@@ -29,8 +29,8 @@ A simple and efficient declarative routing library for Svelte 5 built with runes
 </Router>
 ```
 
-```js
-// SomeComponent.svelte
+```svelte
+<!-- SomeComponent.svelte -->
 <script>
   import { navigate } from 'svelte-tiny-router';
 
