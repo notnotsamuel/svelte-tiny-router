@@ -23,7 +23,7 @@
 		return params;
 	}
 
-	let matchResult = $derived(() => {
+	let matchResult = $derived.by(() => {
 		if (path) {
 			return matchPath(router.path, path);
 		} else {
