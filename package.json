@@ -1,15 +1,16 @@
 {
-  "name": "svelte-tiny-router",
+  "name": "@arthemide/svelte-tiny-router",
   "version": "1.0.0",
+  "author": "notnotsamuel",
   "description": "A simple and efficient declarative routing library for Svelte 5 built with runes.",
   "main": "dist/svelte-tiny-router.es.js",
   "module": "dist/svelte-tiny-router.es.js",
   "svelte": "dist/svelte-tiny-router.es.js",
   "type": "module",
-    "scripts": {
-      "build": "vite build",
-      "dev": "vite build --watch"
-    },
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
   "keywords": [
     "svelte",
     "router",
@@ -19,9 +20,8 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/notnotsamuel/svelte-tiny-router"
+    "url": "git+https://github.com/notnotsamuel/svelte-tiny-router.git"
   },
-  "author": "Your Name",
   "license": "MIT",
   "peerDependencies": {
     "svelte": ">=5.0.0"
@@ -36,5 +36,9 @@
       "svelte": "./dist/svelte-tiny-router.es.js",
       "default": "./dist/svelte-tiny-router.es.js"
     }
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/notnotsamuel/svelte-tiny-router/issues"
+  },
+  "homepage": "https://github.com/notnotsamuel/svelte-tiny-router#readme"
 }
