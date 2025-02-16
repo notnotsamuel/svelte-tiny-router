@@ -3,10 +3,19 @@
   "version": "1.0.0",
   "author": "notnotsamuel",
   "description": "A simple and efficient declarative routing library for Svelte 5 built with runes.",
+  "type": "module",
   "main": "dist/svelte-tiny-router.umd.js",
   "module": "dist/svelte-tiny-router.es.js",
-  "svelte": "dist/svelte-tiny-router.es.js",
-  "type": "module",
+  "svelte": "src/lib/index.js",
+  "files": [
+    "dist",
+    "src/lib"
+  ],
+  "exports": {
+    "svelte": "./src/lib/index.js",
+    "import": "./dist/svelte-tiny-router.es.js",
+    "require": "./dist/svelte-tiny-router.umd.js"
+  },
   "scripts": {
     "build": "vite build",
     "dev": "vite build --watch"
@@ -30,10 +39,6 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "svelte": "^5.19.9",
     "vite": "^6.1.0"
-  },
-  "exports": {
-    "svelte": "./dist/svelte-tiny-router.es.js",
-    "default": "./dist/svelte-tiny-router.es.js"
   },
   "bugs": {
     "url": "https://github.com/notnotsamuel/svelte-tiny-router/issues"
