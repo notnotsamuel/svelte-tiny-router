@@ -1,14 +1,13 @@
 // vite.config.js
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import path from "path";
 
 export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve(__dirname, "src/lib/index.js"),
+      entry: 'src/lib/index.js',
       name: 'SvelteTinyRouter',
-      fileName: (format) => `svelte-tiny-router.${format}.js`,
+      fileName: (format) => `svelte-tiny-router.${format}.js`
     },
     rollupOptions: {
       // Exclude Svelte from the bundle (it should be a peer dependency)
