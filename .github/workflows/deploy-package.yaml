@@ -1,11 +1,9 @@
 name: Deploy Package
 
-# on:
-#   release:
-#     types:
-#       - created
 on:
-  pull_request:
+  release:
+    types:
+      - created
 
 jobs:
   deploy:
