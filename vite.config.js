@@ -5,13 +5,18 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 export default defineConfig({
   build: {
     lib: {
-      entry: 'src/index.js',           // Your library’s entry point
-      name: 'SvelteTinyRouter',        // Global variable name (for UMD/IIFE builds)
+      entry: 'src/lib/index.js',
+      name: 'SvelteTinyRouter',
       fileName: (format) => `svelte-tiny-router.${format}.js`
     },
     rollupOptions: {
       // Exclude Svelte from the bundle (it should be a peer dependency)
-      external: ['svelte']
+      external: ['svelte'],
+      output: {
+        globals: {
+          svelte: "Svelte",
+        },
+      },
     }
   },
   plugins: [

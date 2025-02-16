@@ -1,4 +1,3 @@
-
 # Svelte tiny Router
 
 A simple and efficient declarative routing library for Svelte 5 built with runes.
