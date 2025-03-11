@@ -2,6 +2,12 @@
 
 A simple and efficient declarative routing library for Svelte 5 built with runes.
 
+## Install
+```
+npm i svelte-tiny-router
+```
+
+## Use
 ```svelte
 <!-- App.svelte -->
 <script>
