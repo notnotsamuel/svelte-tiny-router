@@ -8,6 +8,7 @@ npm i svelte-tiny-router
 ```
 
 ## Use
+### route
 ```svelte
 <!-- App.svelte -->
 <script>
@@ -34,6 +35,7 @@ npm i svelte-tiny-router
 </Router>
 ```
 
+### navigate
 ```svelte
 <!-- SomeComponent.svelte -->
 <script>
@@ -45,4 +47,18 @@ npm i svelte-tiny-router
 </script>
 
 <button on:click={goToAbout}>Go to About Page</button>
+```
+
+### get query strings
+```svelte
+<!-- SomeComponent.svelte -->
+<script>
+  import { useTinyRouter } from 'svelte-tiny-router';
+  const router = useTinyRouter();
+
+  // Check if the "foo" query parameter exists (i.e /myroute?foo=bar) and log it
+  if (router.hasQueryParam('foo')) {
+    console.log("Value of foo:", router.getQueryParam('foo'));
+  }
+</script>
 ```
