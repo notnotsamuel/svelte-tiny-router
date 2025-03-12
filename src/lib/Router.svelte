@@ -3,8 +3,23 @@
   
 	let router = $state({
 	  path: url || (typeof window !== 'undefined' ? window.location.pathname : '/'),
-	  routes: [] 
+	  routes: [],
+	  query: {}
 	});
+  
+	// Update both path and query parameters.
+	function updateRouter() {
+	  if (typeof window !== 'undefined') {
+		router.path = window.location.pathname;
+		const search = window.location.search;
+		const params = new URLSearchParams(search);
+		let queryObj = {};
+		for (const [key, value] of params.entries()) {
+		  queryObj[key] = value;
+		}
+		router.query = queryObj;
+	  }
+	}
   
 	// Imperative navigation function.
 	function navigate(to, { replace = false } = {}) {
@@ -14,17 +29,21 @@
 		} else {
 		  window.history.pushState({}, "", to);
 		}
-		router.path = to;
+		updateRouter();
 	  }
 	}
   
 	if (typeof window !== 'undefined') {
-	  window.addEventListener('popstate', () => {
-		router.path = window.location.pathname;
-	  });
+	  updateRouter();
+	  window.addEventListener('popstate', updateRouter);
 	}
   
 	router.navigate = navigate;
+  
+	// Improved query helper function names.
+	router.getQueryParam = (key) => router.query[key];
+	router.hasQueryParam = (key) => Object.prototype.hasOwnProperty.call(router.query, key);
+  
 	import { setContext } from 'svelte';
 	setContext('router', router);
   </script>
