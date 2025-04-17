@@ -32,6 +32,15 @@
 		updateRouter();
 	  }
 	}
+
+	function removeQueryParams(keys) {
+		if (typeof window !== 'undefined') {
+			const url = new URL(window.location.href);
+			keys.forEach(key => url.searchParams.delete(key));
+			window.history.replaceState({}, "", url.toString());
+			updateRouter();
+		}
+	}
   
 	if (typeof window !== 'undefined') {
 	  updateRouter();
@@ -43,7 +52,8 @@
 	// Improved query helper function names.
 	router.getQueryParam = (key) => router.query[key];
 	router.hasQueryParam = (key) => Object.prototype.hasOwnProperty.call(router.query, key);
-  
+	router.removeQueryParams = removeQueryParams;
+
 	import { setContext } from 'svelte';
 	setContext('router', router);
   </script>

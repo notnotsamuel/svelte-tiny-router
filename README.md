@@ -49,7 +49,7 @@ npm i svelte-tiny-router
 <button on:click={goToAbout}>Go to About Page</button>
 ```
 
-### get query strings
+### get then remove query strings
 ```svelte
 <!-- SomeComponent.svelte -->
 <script>
@@ -59,6 +59,7 @@ npm i svelte-tiny-router
   // Check if the "foo" query parameter exists (i.e /myroute?foo=bar) and log it
   if (router.hasQueryParam('foo')) {
     console.log("Value of foo:", router.getQueryParam('foo'));
+    router.removeQueryParams(["foo"]);
   }
 </script>
 ```
