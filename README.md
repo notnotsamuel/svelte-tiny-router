@@ -62,3 +62,7 @@ npm i svelte-tiny-router
   }
 </script>
 ```
+
+## Type Definitions
+
+This library now includes TypeScript definitions, providing improved type checking and autocompletion for users of TypeScript or JavaScript with JSDoc.

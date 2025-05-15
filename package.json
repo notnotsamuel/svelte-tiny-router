@@ -6,6 +6,7 @@
   "type": "module",
   "main": "dist/svelte-tiny-router.umd.js",
   "module": "dist/svelte-tiny-router.es.js",
+  "types": "src/lib/index.d.ts",
   "svelte": "src/lib/index.js",
   "files": [
     "dist",
