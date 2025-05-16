@@ -94,7 +94,7 @@ Here's a basic example demonstrating simple routes:
 <button on:click={navigateWithQuery}>Search</button>
 ```
 
-### get query strings
+### get then remove query strings
 ```svelte
 <!-- SomeComponent.svelte -->
 <script>
@@ -107,6 +107,7 @@ Here's a basic example demonstrating simple routes:
   // Check if the "foo" query parameter exists (i.e /myroute?foo=bar) and log it
   if (router.hasQueryParam('foo')) {
     console.log("Value of foo:", router.getQueryParam('foo'));
+    router.removeQueryParams(["foo"]);
   }
 
   // Get a specific query parameter
