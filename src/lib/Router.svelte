@@ -65,8 +65,14 @@
 
 	function _resolvePath(to) {
 		let newFullPath;
-		if (to.startsWith('/')) { // Absolute within the base
-			newFullPath = (router.base.replace(/\/$/, '') + to).replace(/\/\//g, '/');
+		if (to.startsWith('/')) { // Path starts with a slash
+			if (router.base !== '/' && (to === router.base || to.startsWith(router.base + '/'))) {
+				// 'to' is an absolute path that already includes the base of this nested router
+				newFullPath = to;
+			} else {
+				// 'to' is absolute relative to this router's base, or this is the root router
+				newFullPath = (router.base.replace(/\/$/, '') + to).replace(/\/\//g, '/');
+			}
 		} else { // Relative to current path within the base
 			const currentDir = router.path.substring(0, router.path.lastIndexOf('/') + 1);
 			newFullPath = (router.base.replace(/\/$/, '') + '/' + currentDir + to).replace(/\/\//g, '/');
@@ -85,19 +91,19 @@
 		return newFullPath.replace(/\/\//g, '/') || '/';
 	}
 	
-	async function _runGuards(toFullPath, fromFullPath, navigationAction) {
+	async function _runGuards(toFullPath, fromFullPath, toQueryForGuards, navigationAction) { // Added toQueryForGuards
 		if (router.beforeEach.length === 0) {
 			navigationAction();
 			return;
 		}
 
-		const toQuery = typeof window !== 'undefined' ? _parseQuery(window.location.search) : {}; // Or parse from toFullPath if it includes query
+		// const toQuery = typeof window !== 'undefined' ? _parseQuery(window.location.search) : {}; // OLD
 		const fromQuery = router.fromPath ? _parseQuery(new URL(router.fromPath, window.location.origin).search) : {};
 		
 		// Extract params - this is tricky without knowing the matching route yet.
 		// For guards, `params` might be less critical or require a preliminary match.
 		// For now, passing empty params. A more advanced version could pre-match.
-		const toRouteInfo = { path: toFullPath, params: {}, query: toQuery };
+		const toRouteInfo = { path: toFullPath, params: {}, query: toQueryForGuards }; // Use passed toQueryForGuards
 		const fromRouteInfo = router.fromPath ? { path: fromFullPath, params: {}, query: fromQuery } : null;
 
 		let i = 0;
@@ -144,6 +150,27 @@
 			// If url prop was used, initialQuery has it. Otherwise, it's {}.
 		}
 	}
+
+	function removeQueryParams(keysToRemove) {
+		if (typeof window !== 'undefined') {
+			const currentSearch = window.location.search; // Get current query from actual URL
+			const params = new URLSearchParams(currentSearch);
+			
+			keysToRemove.forEach(key => {
+				params.delete(key);
+			});
+			
+			const newSearchString = params.toString();
+			const newQueryPart = newSearchString ? `?${newSearchString}` : '';
+
+			// Use the router's own navigate method.
+			// router.path is the path relative to this router's base.
+			// We pass the current relative path along with the new query string.
+			// This ensures guards are run and state is updated consistently.
+			// Using replace: true is often better for query-only changes.
+			router.navigate(router.path + newQueryPart, { replace: true }); 
+		}
+	}
 	
 	// This function is called by popstate or after successful guards in navigate
 	function _performUpdate(fullPathToNavigate) {
@@ -155,8 +182,9 @@
 	async function handlePopState() {
 		if (typeof window !== 'undefined') {
 			const targetFullPath = window.location.pathname; // This includes path only
+			const currentQuery = _parseQuery(window.location.search); // Parse query at the time of popstate
 			// Query will be re-parsed from window.location.search in _updateRouterState
-			await _runGuards(targetFullPath, router.fullPath, () => {
+			await _runGuards(targetFullPath, router.fullPath, currentQuery, () => { // Pass currentQuery
 				_performUpdate(targetFullPath);
 			});
 		}
@@ -164,23 +192,29 @@
 	
 	async function navigate(to, { replace = false } = {}) {
 		if (typeof window !== 'undefined') {
-			const targetFullPath = _resolvePath(to); // Resolves path part of 'to'
-			let targetSearch = window.location.search; // Default to current search query
-
-			// If 'to' includes a query string, use that instead.
-			const toParts = to.split('?');
-			if (toParts.length > 1) {
-				targetSearch = '?' + toParts[1];
+			let pathInput = to;
+			let searchInput = ''; // e.g., "?foo=bar" or ""
+			const queryIndex = to.indexOf('?');
+			if (queryIndex !== -1) {
+				pathInput = to.substring(0, queryIndex);
+				searchInput = to.substring(queryIndex);
 			}
-			
-			await _runGuards(targetFullPath, router.fullPath, () => {
+
+			const targetFullPath = _resolvePath(pathInput); // pathInput is now path-only
+			const targetSearch = searchInput; // searchInput is query from 'to', or empty
+
+			const toQueryForGuards = _parseQuery(targetSearch); // Parse the query we intend to navigate to
+
+			await _runGuards(targetFullPath, router.fullPath, toQueryForGuards, () => {
 				router.fromPath = router.fullPath; // Set fromPath before history change
 				if (replace) {
 					window.history.replaceState({}, "", targetFullPath + targetSearch);
 				} else {
 					window.history.pushState({}, "", targetFullPath + targetSearch);
 				}
-				_performUpdate(targetFullPath); // Update internal state after history change. _updateRouterState will parse new search.
+				// _performUpdate will use targetFullPath and then re-read window.location.search
+				// which is fine as history API has just updated it.
+				_performUpdate(targetFullPath);
 			});
 		}
 	}
@@ -207,6 +241,7 @@
 	router.navigate = navigate;
 	router.getQueryParam = (key) => router.query[key];
 	router.hasQueryParam = (key) => Object.prototype.hasOwnProperty.call(router.query, key);
+	router.removeQueryParams = removeQueryParams;
   
 	setContext('router', router);
   </script>

@@ -13,6 +13,7 @@ export interface RouterContext {
   navigate: (to: string, options?: { replace?: boolean }) => void;
   getQueryParam: (key: string) => string | undefined;
   hasQueryParam: (key: string) => boolean;
+  removeQueryParams: (keys: string[]) => void;
 }
 
 export function useTinyRouter(): RouterContext;
