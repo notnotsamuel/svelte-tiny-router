@@ -1,6 +1,5 @@
 node_modules
 dist
 *.log
-dummy
 
 .DS_Store

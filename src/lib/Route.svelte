@@ -4,46 +4,64 @@
   
   <script>
 	import { getContext } from 'svelte';
-	let { path, component } = $props();
+	import NestedRouterProvider from './NestedRouterProvider.svelte'; // Import the new provider
+
+	let { path, component, children } = $props(); // children for snippet-based slot
 	const router = getContext('router');
   
 	if (path) {
-	  router.routes.push(path);
+	  // Ensure routes are registered on the correct router instance,
+	  // especially in nested scenarios.
+	  if (!router.routes.includes(path)) {
+		router.routes.push(path);
+	  }
 	}
-	function matchPath(current, route) {
-	  const currentSegments = current.split('/').filter(Boolean);
-	  const routeSegments = route.split('/').filter(Boolean);
-	  if (currentSegments.length !== routeSegments.length) return null;
+
+	// Renamed and enhanced matching function
+	function _matchRoute(currentPath, routePattern) {
+	  const currentSegments = currentPath.split('/').filter(Boolean);
+	  let routeSegments = routePattern.split('/').filter(Boolean);
 	  let params = {};
+	  const isWildcard = routePattern.endsWith('/*');
+
+	  if (isWildcard) {
+		routeSegments = routePattern.slice(0, -2).split('/').filter(Boolean); // Remove '/*' for matching base
+		if (currentSegments.length < routeSegments.length) return null; // Current path must be at least as long as wildcard base
+	  } else {
+		if (currentSegments.length !== routeSegments.length) return null;
+	  }
+
 	  for (let i = 0; i < routeSegments.length; i++) {
-		const rseg = routeSegments[i];
-		const cseg = currentSegments[i];
-		if (rseg.startsWith(':')) {
-		  // Dynamic segment—store the parameter.
-		  params[rseg.slice(1)] = cseg;
-		} else if (rseg !== cseg) {
+		const rSeg = routeSegments[i];
+		const cSeg = currentSegments[i];
+		if (rSeg.startsWith(':')) {
+		  params[rSeg.slice(1)] = cSeg;
+		} else if (rSeg !== cSeg) {
 		  return null;
 		}
 	  }
-	  return params;
+	  return params; // Returns params for matched part, even for wildcard
 	}
   
 	let matchResult = $derived.by(() => {
 	  if (path) {
-		return matchPath(router.path, path);
+		return _matchRoute(router.path, path);
 	  } else {
-		return null; // fallback route handled separately
+		return null; // Fallback route handled separately
 	  }
 	});
+
+	const isWildcardRoute = $derived(path && path.endsWith('/*'));
   
 	let fallbackMatch = $derived.by(() => {
-	  if (!path) { // this is the fallback route
-		for (let pattern of router.routes) {
-		  if (matchPath(router.path, pattern) !== null) {
-			return null; // a defined route matched—do not render fallback
+	  if (!path) { // This is the fallback route
+		// Check against all registered routes in the current router context
+		for (let routePattern of router.routes) {
+		  if (_matchRoute(router.path, routePattern) !== null) {
+			return null; // A defined route matched—do not render fallback
 		  }
 		}
-		return {}; // no defined route matched—fallback should render
+		return {}; // No defined route matched—fallback should render
 	  } else {
 		return null;
 	  }
@@ -54,16 +72,32 @@
 	});
   
 	let paramsToPass = $derived.by(() => {
-	  return matchResult || fallbackMatch || {};
+	  return matchResult || fallbackMatch || {}; // Fallback has empty params
 	});
+
   </script>
   
   {#if shouldRender}
-	{#if component}
+	{#if isWildcardRoute && matchResult}
+	  <NestedRouterProvider parentCtx={router} matchedPath={path}>
+		{#if component}
+		  {@const Component = component}
+		  <Component {...paramsToPass} /> 
+		{:else if children}
+		  {@render children({ params: paramsToPass })}
+		{:else}
+		  <!-- This case implies a wildcard route without a component and without default slot content passed as children snippet.
+			   It might be an unusual setup, but NestedRouterProvider will still set the context.
+			   A <slot> here would refer to NestedRouterProvider's slot, not Route's.
+			   If Route's slot content is expected, it must be passed via `children` prop for wildcards.
+		  -->
+		{/if}
+	  </NestedRouterProvider>
+	{:else if component}
 	  {@const Component = component}
-	  <Component {...(paramsToPass)} />
-	{:else}
-	  <slot let:params={paramsToPass} />
+	  <Component {...paramsToPass} />
+	{:else if children}
+	  {@render children({ params: paramsToPass })}
+	<!-- If no component and no children snippet, render nothing for this route -->
 	{/if}
   {/if}
-  
