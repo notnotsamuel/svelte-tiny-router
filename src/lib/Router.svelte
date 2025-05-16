@@ -5,7 +5,6 @@
 	
 	const parentRouterContext = getContext('router'); // Might be undefined if this is the root router
 
-	// --- BEGIN MODIFIED SECTION FOR EARLY QUERY PARSING ---
 	let initialQuery = {};
 	let initialFullPath = '/';
 
@@ -19,7 +18,6 @@
 			initialQuery = _parseQuery('?' + parts[1]);
 		}
 	}
-	// --- END MODIFIED SECTION FOR EARLY QUERY PARSING ---
 	
 	let initialBase = '/';
 	let initialRelativePath = initialFullPath;
@@ -150,7 +148,7 @@
 			// If url prop was used, initialQuery has it. Otherwise, it's {}.
 		}
 	}
-
+  
 	function removeQueryParams(keysToRemove) {
 		if (typeof window !== 'undefined') {
 			const currentSearch = window.location.search; // Get current query from actual URL
@@ -242,7 +240,6 @@
 	router.getQueryParam = (key) => router.query[key];
 	router.hasQueryParam = (key) => Object.prototype.hasOwnProperty.call(router.query, key);
 	router.removeQueryParams = removeQueryParams;
-  
 	setContext('router', router);
   </script>
   
