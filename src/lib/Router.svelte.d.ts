@@ -1,4 +1,4 @@
-import type { Component } from 'svelte';
+import type { Component, Snippet } from 'svelte';
 
 export interface RouteInfo {
   path: string;
@@ -17,6 +17,7 @@ export type NavigationGuard = (context: {
 export interface RouterProps {
   url?: string;
   beforeEach?: NavigationGuard[];
+  children?: Snippet;
 }
 
 declare const Router: Component<RouterProps>;
