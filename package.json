@@ -13,6 +13,7 @@
     "src/lib"
   ],
   "exports": {
+    "types": "./src/lib/index.d.ts",
     "svelte": "./src/lib/index.js",
     "import": "./dist/svelte-tiny-router.es.js",
     "require": "./dist/svelte-tiny-router.umd.js"
