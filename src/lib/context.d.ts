@@ -1,5 +1,5 @@
 import type { SvelteComponent } from 'svelte';
-import type { NavigationGuard } from './Router.svelte.d.ts'; // Import for beforeEach type
+import type { NavigationGuard } from './Router.svelte'; 
 
 export interface RouterContext {
   base: string; // Base path of the current router instance
@@ -15,5 +15,3 @@ export interface RouterContext {
   hasQueryParam: (key: string) => boolean;
   removeQueryParams: (keys: string[]) => void;
 }
-
-export function useTinyRouter(): RouterContext;
