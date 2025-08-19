@@ -1,6 +1,6 @@
 {
   "name": "svelte-tiny-router",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "author": "notnotsamuel",
   "description": "A simple and efficient declarative routing library for Svelte 5 built with runes.",
   "type": "module",
