@@ -1,5 +1,4 @@
-import type { SvelteComponent } from 'svelte';
-import type { NavigationGuard } from './Router.svelte'; 
+import type { NavigationGuard } from './Router.svelte';
 
 export interface RouterContext {
   base: string; // Base path of the current router instance

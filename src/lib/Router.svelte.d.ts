@@ -1,4 +1,4 @@
-import type { SvelteComponent } from 'svelte';
+import type { Component } from 'svelte';
 
 export interface RouteInfo {
   path: string;
@@ -19,4 +19,5 @@ export interface RouterProps {
   beforeEach?: NavigationGuard[];
 }
 
-export default class Router extends SvelteComponent<RouterProps> {}
+declare const Router: Component<RouterProps>;
+export default Router;

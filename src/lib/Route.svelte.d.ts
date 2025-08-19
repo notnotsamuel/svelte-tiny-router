@@ -1,8 +1,9 @@
-import type { SvelteComponent } from 'svelte';
+import type { Component } from 'svelte';
 
 export interface RouteProps {
   path?: string;
-  component?: typeof SvelteComponent;
+  component?: Component;
 }
 
-export default class Route extends SvelteComponent<RouteProps> {}
+declare const Route: Component<RouteProps>;
+export default Route;
